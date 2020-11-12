@@ -1,35 +1,38 @@
 import json
-from math import sqrt, acos, pi
+from math import sqrt, acos, pi, cos, sin
 
-class Vector:
-    def __init__(self, i = 0.0, j = 0.0):
-        i = float(i)
-        j = float(j)
-
-class Position:
-    def __init__(self, x, y):
-        self.x = float(x)
-        self.y = float(y)
-
-    def getX(self):
-        return self.x
-
-    def getY(self):
-        return self.y
 
 class snowblower:
-    def __init__(self, x = 0.0, y = 0.0, heading = 0.0, velocity = 0.0):
+    def __init__(self, x = 0.0, y = 0.0, heading = 0.0, velocity = 0.0, distance = 0.0):
         self.heading = heading
-        self.position = Position(x, y)
+        self.position = [x, y]
         self.velocity = velocity
+        self.distance = distance
 
         self.fullyCoveredBool = False
+        self.wait = False
 
     def drive_straight(self, distance_mm = 0.0, speed_mmps = 0.0):
-        pass
+        self.distance = distance_mm
+        self.velocity = speed_mmps
+        
+        list_of_points_to_traverse = []
+
+        for x in range(0,distance_mm):
+            list_of_points_to_traverse.append([x*cos(self.heading), x*sin(self.heading)])
+
+        return list_of_points_to_traverse
 
     def turn_in_place(self, degrees = 0.0):
-        pass
+        #TODO: Simulate turning
+        self.heading += degrees
+
+    def distance_mm(self, dist):
+        return dist
+    def speed_mmps(self, speed):
+        return speed
+    def degrees(self, angle):
+        return angle
 
 """
     # drive in a straight line 100 mm at a speed of 30 mm/s

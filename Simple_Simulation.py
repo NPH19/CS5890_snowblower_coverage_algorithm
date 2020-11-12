@@ -37,7 +37,7 @@ class Game:
         heading = 0.0
         velocity = 5.0
         snowblowerRobot = snowblower(x = start[0], y = start[1], heading=heading, velocity=velocity)
-        # snowblowerRobot.initialize()
+        snowblowerRobot.drive_straight(distance_mm=distance_mm(10))
 
 
         ppu = 10
@@ -53,34 +53,23 @@ class Game:
                     if event.key == K_ESCAPE:
                         self.exit = True
 
-            # if holonomicRobot.atGoal == True and nonHolonomicRobot.atGoal == True:
-            #     return # Game Over
-            #     # break
-            # ## HOLONOMIC ROBOT MOVEMENT LOGIC
-            # # Check to see if we have reached the goal
-            # if not holonomicRobot.atGoalFunc():                    
-            #     holonomicRobot.move(dt)
-            #     # Check if we made it
-            #     if not holonomicRobot.atGoalFunc():
-            #         # Update vector to goal
-            #         holonomicRobot.update(holonomicRobot.position)
 
 
             # Drawing
             self.screen.fill((0, 0, 0))
 
             # draw the holonomic robot in its updated location
-            self.draw(snowblowerRobot.position)
+            # self.draw(snowblowerRobot.position)
 
             # scale car sprite
             size = car_image.get_size()
             smaller_car = pygame.transform.scale(car_image, (int(size[0]/2), int(size[1]/2)))
 
             # draw non-holonomic car at the correct angle
-            rotated = pygame.transform.rotate(smaller_car, nonHolonomicRobot.theta)
+            rotated = pygame.transform.rotate(smaller_car, snowblowerRobot.heading)
 
             rect = rotated.get_rect()
-            self.screen.blit(rotated, nonHolonomicRobot.position * ppu - (rect.width / 2, rect.height / 2))
+            self.screen.blit(rotated, snowblowerRobot.position * ppu - (rect.width / 2, rect.height / 2))
             pygame.display.flip()
 
             self.clock.tick(self.ticks)
@@ -94,8 +83,8 @@ class Game:
         pygame.draw.rect(self.screen, PURPLE, poisonRect)
 
     def draw(self, coord):
-        x = coord.x * 10
-        y = coord.y * 10
+        x = coord.getX() * 10
+        y = coord.getY() * 10
         robotSegmentRect = pygame.Rect(x, y, 20, 20)
         pygame.draw.rect(self.screen, DARKORANGE, robotSegmentRect)
         robotInnerSegmentRect = pygame.Rect(x + 4, y + 4, 12, 12)
