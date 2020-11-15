@@ -28,7 +28,6 @@
         "no-snow-zones": [
             {
                 "outline": [],
-                "isDumpSite": false
             }
         ],
         // the percent of the parking lot's total area that should be free of snow
