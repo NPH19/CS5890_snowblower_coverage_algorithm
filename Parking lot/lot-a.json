@@ -1,5 +1,5 @@
 {
-    "parking-lot": {
+    "parkingLot": {
         "outline": [
             {
                 "x": 0,
@@ -50,8 +50,8 @@
                 "y": 0
             }
         ],
-        "snow-dump-zones": {
-            "outline": [
+        "snowDumpZones": [
+            [
                 {
                     "x": 210,
                     "y": 0
@@ -73,12 +73,12 @@
                     "y": 0
                 }
             ]
-        },
-        "robot": {
-            "x": 0,
-            "y": 0,
-            "angle": 90,
-            "heading": 90
-        }
+        ]
+    },
+    "robot": {
+        "x": 0,
+        "y": 0,
+        "angle": 90,
+        "heading": 90
     }
 }
