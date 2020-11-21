@@ -2,18 +2,13 @@ import json
 from math import sqrt, acos, pi, cos, sin
 
 
-class snowblower:
-    def __init__(self, x = 0.0, y = 0.0, heading = 0.0, velocity = 0.0, distance = 0.0):
+class Robot:
+    def __init__(self, x = 0.0, y = 0.0, heading = 0, velocity = 0.0):
         self.heading = heading
         self.position = [x, y]
         self.velocity = velocity
-        self.distance = distance
-
-        self.fullyCoveredBool = False
-        self.wait = False
 
     def drive_straight(self, distance_mm = 0.0, speed_mmps = 0.0):
-        self.distance = distance_mm
         self.velocity = speed_mmps
         
         list_of_points_to_traverse = []
