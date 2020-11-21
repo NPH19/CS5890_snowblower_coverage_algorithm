@@ -35,11 +35,6 @@
         //  an optional list of obstacles that can be inside or outside of a parking lot
         "obstacles": [
             {
-                // vector of the obstacle from the origin
-                "location-from-origin": {
-                    "x": 0,
-                    "y": 0
-                },
                 "outline": [
                     {
                         "x": 0,
@@ -63,6 +58,12 @@
         //      -overrides no-dump-zones
         "snow-dump-zones": {
             "outline": []
+        },
+        "robot": {
+            "x": 0,
+            "y": 0,
+            "angle": 90,
+            "heading": 90
         }
     }
 }
