@@ -9,51 +9,51 @@
 MOCK_INSTRUCTIONS = [
     # swath 1
     # go strait
-    {"angle": 0, "distance": 100},
+    [0, 100],
     # turn right and reposition for the next swath
-    {"angle": -90, "distance": 10},
+    [-90, 10],
     # turn right, then go strait,
-    {"angle": -90, "distance": 100},
+    [-90, 100],
     # swath 2
     # turn left and reposition for the next swath
-    {"angle": 90, "distance": 10},
+    [90, 10],
     # turn left to reposition for next swath then go strait
-    {"angle": 90, "distance": 100},
+    [90, 100],
     # swath 3
     # turn right and reposition for the next swath
-    {"angle": -90, "distance": 10},
+    [-90, 10],
     # turn right, then go strait,
-    {"angle": -90, "distance": 100},
+    [-90, 100],
     # swath 4
     # turn left and reposition for the next swath
-    {"angle": 90, "distance": 10},
+    [90, 10],
     # turn left to reposition for next swath then go strait
-    {"angle": 90, "distance": 100},
+    [90, 100],
     # swath 5
     # turn right and reposition for the next swath
-    {"angle": -90, "distance": 10},
+    [-90, 10],
     # turn right, then go strait,
-    {"angle": -90, "distance": 100},
+    [-90, 100],
     # swath 6
     # turn left and reposition for the next swath
-    {"angle": 90, "distance": 10},
+    [90, 10],
     # turn left to reposition for next swath then go strait
-    {"angle": 90, "distance": 100},
+    [90, 100],
     # swath 7
     # turn right and reposition for the next swath
-    {"angle": -90, "distance": 10},
+    [-90, 10],
     # turn right, then go strait,
-    {"angle": -90, "distance": 100},
+    [-90, 100],
     # swath 8
     # turn left and reposition for the next swath
-    {"angle": 90, "distance": 10},
+    [90, 10],
     # turn left to reposition for next swath then go strait
-    {"angle": 90, "distance": 100},
+    [90, 100],
     # swath 9 (final swath because of the the snow zone)
     # turn right and reposition for the next swath
-    {"angle": -90, "distance": 10},
+    [-90, 10],
     # turn right, then go strait,
-    {"angle": -90, "distance": 100}
+    [-90, 100]
 ]
 
 
