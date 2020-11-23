@@ -19,12 +19,12 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 255,   0)
 BLACK = (0, 0,   0)
 
-CELLSIZE = 1
+CELLSIZE = 10
 ROBOT_WIDTH = 10
 
 
 def drawPoint(screen, x, y, color):
-    pointRect = pygame.Rect(int(x), int(y), CELLSIZE, CELLSIZE)
+    pointRect = pygame.Rect(int(x)*10, int(y)*10, CELLSIZE, CELLSIZE)
     pygame.draw.rect(screen, color, pointRect)
 
 
@@ -83,6 +83,11 @@ class SnowRemovalSim:
         covAlg = CoverageAlgorithm(self.parkinglot)
         instructions = covAlg.getInstructions()
 
+        """
+        THIS IS JUST FOR TESTING
+        """
+        instructions = [(90,10), (0,10)]
+        """""""
         while not self.exit:
             dt = self.clock.get_time() / 1000
 
@@ -101,9 +106,10 @@ class SnowRemovalSim:
                 if angle != self.robot.heading:
                     self.robot.turn_in_place(angle)
                 distance = instructions[i][1]
-                list_of_points = self.robot.drive_straight(distance)
+                list_of_points = self.robot.drive_straight(distance, dt)
 
                 for j in range(0, len(list_of_points)):
+
                     current_position = list_of_points[j]
                     blower_angle = self.snowblower.get_direction(
                         current_position)
@@ -124,9 +130,10 @@ class SnowRemovalSim:
                     self.drawBlower(blower_angle, blower_distance)
 
                     pygame.display.flip()
+                    pygame.time.delay(300)
                     self.clock.tick(self.ticks)
 
-        pygame.quit()
+            pygame.quit()
 
 
 def getFile(argv):
@@ -146,10 +153,29 @@ def getFile(argv):
 
 
 if __name__ == '__main__':
-    # load the parking lot
-    initState = getFile(sys.argv[1:])
-    if initState is not None:
-        print(initState)
-        srSim = SnowRemovalSim(initState['parkingLot']['outline'],
-                               initState['parkingLot']['snowZones'], initState['robot'])
+    TEST = True
+    if TEST == False:
+        # load the parking lot
+        initState = getFile(sys.argv[1:])
+        if initState is not None:
+            print(initState)
+            srSim = SnowRemovalSim(initState['parkingLot']['outline'],
+                                   initState['parkingLot']['snowZones'], initState['robot'])
+            srSim.run()
+    else:
+        robot = {'origin': [20,20], 'heading':90}
+        parkinglot = {'origin':[[0,0],[ 0,100 ],
+                [
+                    100,
+                    100
+                ],
+                [
+                    100,
+                    0
+                ],
+                [
+                    0,
+                    0
+                ]]}
+        srSim = SnowRemovalSim(parkinglot,[],robot)
         srSim.run()

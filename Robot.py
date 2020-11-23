@@ -1,5 +1,5 @@
 import json
-from math import sqrt, acos, pi, cos, sin
+from math import sqrt, acos, pi, cos, sin, radians
 
 
 class Robot:
@@ -12,16 +12,18 @@ class Robot:
         self.velocity = speed_mmps
 
         list_of_points_to_traverse = []
+        new_position = self.position
+        for _ in range(0, distance_mm):
+            new_position = [new_position[0]+cos(radians(self.heading)), 
+                            new_position[1]-sin(radians(self.heading))]
+            list_of_points_to_traverse.append(new_position)
 
-        for x in range(0, distance_mm):
-            list_of_points_to_traverse.append(
-                [x*cos(self.heading), x*sin(self.heading)])
-
+        self.position = list_of_points_to_traverse[-1]
         return list_of_points_to_traverse
 
-    def turn_in_place(self, degrees=0.0):
+    def turn_in_place(self, degrees):
         # TODO: Simulate turning
-        self.heading += degrees
+        self.heading = degrees
 
     def distance_mm(self, dist):
         return dist
