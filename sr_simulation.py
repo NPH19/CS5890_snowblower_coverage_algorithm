@@ -86,8 +86,8 @@ class SnowRemovalSim:
         """
         THIS IS JUST FOR TESTING
         """
-        instructions = [(90,10), (0,10)]
-        """""""
+        instructions = [(90,10), (45,10)]
+        """ """
         while not self.exit:
             dt = self.clock.get_time() / 1000
 
