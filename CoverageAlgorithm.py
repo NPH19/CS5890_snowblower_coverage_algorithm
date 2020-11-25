@@ -50,10 +50,10 @@ MOCK_INSTRUCTIONS = [
     # turn left to reposition for next swath then go strait
     [90, 100],
     # swath 9 (final swath because of the the snow zone)
-    # turn right and reposition for the next swath
-    [-90, 10],
-    # turn right, then go strait,
-    [-90, 100]
+    # # turn right and reposition for the next swath
+    # [-90, 10],
+    # # turn right, then go strait,
+    # [-90, 100]
 ]
 
 
