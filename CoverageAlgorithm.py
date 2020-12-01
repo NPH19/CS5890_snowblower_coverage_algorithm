@@ -58,9 +58,10 @@ MOCK_INSTRUCTIONS = [
 
 
 class CoverageAlgorithm:
-    def __init__(self, parkinglot):
+    def __init__(self, parkinglot, robot_width):
         self.parkinglot = parkinglot
         self.instructions = []
+        self.robot_width = robot_width
 
     def getInstructions(self):
         return MOCK_INSTRUCTIONS

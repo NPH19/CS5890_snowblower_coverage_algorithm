@@ -127,7 +127,7 @@ class SnowRemovalSim:
 
     def run(self):
         # build instructions with coverage algorithm
-        covAlg = CoverageAlgorithm(self.parkinglot)
+        covAlg = CoverageAlgorithm(self.parkinglot, ROBOT_WIDTH)
         instructions = covAlg.getInstructions()
 
         # """
