@@ -159,9 +159,10 @@ class SnowRemovalSim:
                 for j in range(0, len(list_of_points)):
 
                     current_position = list_of_points[j]
-                    blower_angle = self.snowblower.get_direction(
+                    self.snowblower.update(self.points_traversed, self.robot.heading, current_position, ROBOT_WIDTH)
+                    blower_angle = self.snowblower.get_angle(
                         current_position)
-                    blower_distance = self.snowblower.get_pitch(
+                    blower_distance = self.snowblower.get_distance(
                         current_position)
 
                     # erase the screen
