@@ -1,4 +1,4 @@
-
+from math import sqrt
 
 # {
 #   parkingLot :{
@@ -64,7 +64,7 @@ class Line:
         self.y2 = y2
 
     def length(self):
-        return math.sqrt((self.x2 - self.x1)**2 + (self.y2 - self.y1)**2)
+        return sqrt((self.x2 - self.x1)**2 + (self.y2 - self.y1)**2)
 
     def ptOnLine(self, x, y):
         if (x >= self.x1 and x <= self.x2) or (x >= self.x2 and x <= self.x1):
@@ -74,7 +74,7 @@ class Line:
 
 
 class CoverageAlgorithm:
-    def __init__(self, parkinglot, robot_width):
+    def __init__(self, parkinglot, robot_width, cellsize):
         self.parkinglot = parkinglot
         self.instructions = []
         self.robot_width = robot_width
@@ -86,9 +86,11 @@ class CoverageAlgorithm:
         self.xMax = None
         self.yMin = None
         self.yMax = None
+        self.cellsize = cellsize
 
     def getInstructions(self):
         # return MOCK_INSTRUCTIONS
+        print('parking lot: ',self.parkinglot)
         self.parsePoints(self.parkinglot)
         self.createInstructions()
         return self.instructions
@@ -102,19 +104,16 @@ class CoverageAlgorithm:
                     parkingLot[i+1][1]
             ))
             if self.xMin == None or parkingLot[i][0] < self.xMin:
-                self.xMin = parkinglot[i][0]
+                self.xMin = self.parkinglot[i][0]
             if self.yMin == None or parkingLot[i][1] < self.yMin:
-                self.yMin = parkinglot[i][1]
+                self.yMin = self.parkinglot[i][1]
             if self.xMax == None or parkingLot[i][0] > self.xMax:
-                self.xMax = parkinglot[i][0]
+                self.xMax = self.parkinglot[i][0]
             if self.yMax == None or parkingLot[i][1] > self.yMax:
-                self.yMax = parkinglot[i][1]
-            
-        # self.lines.append(Line(self.parkingLot[len(self.parkingLot)-1][0], self.parkingLot[len(
-        #     self.parkingLot)-1][1], self.parkingLot[0][0], self.parkingLot[0][1]))
-        xBound = self.sliceLot(self.parkingLot)
-        yBound = self.sliceLot(self.parkingLot, axis=1)
-        # TODO: Find direction
+                self.yMax = self.parkinglot[i][1]
+
+        xBound = self.sliceLot(self.parkinglot)
+        yBound = self.sliceLot(self.parkinglot, axis=1)
         if len(xBound) < len(yBound):
             self.boundaries = xBound
             self.startDirection = 90
@@ -124,9 +123,6 @@ class CoverageAlgorithm:
             self.startDirection = 0
             self.axis = 1
         self.boundaries.sort()
-        # m = max(yVals)
-        # if m > yMax:
-        #     yMax = m
 
 
     def sliceLot(self, points, axis=0):
@@ -134,8 +130,6 @@ class CoverageAlgorithm:
         for point in points:
             if point[axis] not in boundaries:
                 boundaries.append(point[axis])
-            # if point[1] not in yVals:
-            #     yVals.append(point[1])
         return boundaries
 
     def findMin(self, val):
@@ -165,138 +159,16 @@ class CoverageAlgorithm:
                         m = x
         return m
 
-    # def findMinYOnX(self, x):
-    #     for y in range(yMax + 1):
-    #         for line in lines:
-    #             if line.ptOnLine(x, y):
-    #                 return y
-    #     return None
-
-
-    # def findMaxYOnX(self, x):
-    #     m = None
-    #     for y in range(yMax + 1):
-    #         for line in lines:
-    #             if line.ptOnLine(x, y):
-    #                 m = y
-    #     return m
-
-
     def createInstructions(self):
-        # TODO: move in direction found above rather than default
-        # turn = self.startDirection
         for i in range(len(self.boundaries) - 1):
-            # if self.axis == 0:
-            distance = findMax(self.boundaries[i]) - findmin(self.boundaries[i])
-
-            # elif self.axis == 1:
-            #     distance = findMax(self.boundaries[i]) - findMin(self.boundaries[i])
-
-            # boundStart = self.boundaries[i]
-            # boundEnd = self.boundaries[i + 1]
-            # Start = self.findMin(i)
-            # End = self.findMax(i)
-
-            # diffX = xEnd - xStart
-            # print(f"goto({xStart},{yStart})")
+            distance = self.findMax(self.boundaries[i]) - self.findMin(self.boundaries[i])
             turn = self.startDirection
-            self.instructions.append((turn,distance))
+            self.instructions.append((turn,int(distance/self.cellsize)))
+            sign = 1
             for _ in range(0,distance,self.robot_width):
-                # print(f"goforward({diffX})")
-                # print(f"turn({turn})")
-                # print(f"currentposition({xEnd}, {yStart})")
-                self.instructions.append()
-                # print(f"goforward({ROBOTLENGTH})")
-                # print(f"turn({turn})")
-                yStart += ROBOTLENGTH
-                turn += 180
-                turn %= 360
-                # print(f"currentposition({xStart}, {yStart})")
-                self.instructions.append([turn, (xEnd, yStart)])
-
-
-    def reset(self):
-        lines.clear()
-        # verticalBoundaries.clear()
-        yVals.clear()
-        yMax = 0
-        instructions.clear()
-
-
-
-###################################################################################
-import math
-
-
-
-
-
-lines = []
-verticalBoundaries = []
-yVals = []
-yMax = 0
-instructions = []
-horizBoundaries = []
-
-
-
-
-
-lot1 = [
-    (0, 50),
-    (100, 50),
-    (100, 0),
-    (150, 0),
-    (150, 100),
-    (75, 100),
-    (75, 75),
-    (50, 75),
-    (50, 100),
-    (0, 100)
-]
-
-lot2 = [
-    (0, 0),
-    (100, 0),
-    (100, 100),
-    (0, 100),
-]
-
-print("parsing lot 1...")
-parsePoints(lot1)
-print(verticalBoundaries)
-for x in verticalBoundaries:
-    print(
-        f"min-{x}: {findMinYOnX(x+ROBOTLENGTH)} -- max-{x}: {findMaxYOnX(x+ROBOTLENGTH)}")
-
-createInstructions()
-print(instructions)
-
-RESET()
-
-# print("parsing lot 2...")
-# parsePoints(lot2)
-# print(verticalBoundaries)
-# for x in verticalBoundaries:
-#     print(f"min-{x}: {findMinYOnX(x+ROBOTLENGTH)} -- max-{x}: {findMaxYOnX(x+ROBOTLENGTH)}")
-
-
-'''
-[0,25,50,100]
-_________________________________________________
-|        *                  *                     |
-|        *                  *                     |
-|        *                  *                     |
-|        *                  *                     |
-|        *                  *                     |
-|        *                  *                     |
-|________*                  * _____________________
-        |                   |
-        |                   |
-        |___________________|                       
-
-'''
-# def invertParkinglot(parkinglot):
-#     newParking = []
-#     for i in range(len(parkinglot)):
-#         parkinglot[i]
+                sign *= -1
+                side_step = self.robot_width
+                turn = sign * 90
+                self.instructions.append((turn,int(side_step/self.cellsize)))
+                turn = sign * 90
+                self.instructions.append((turn, int(distance/self.cellsize)))

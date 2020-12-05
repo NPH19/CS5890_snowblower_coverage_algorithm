@@ -4,9 +4,9 @@ import pygame
 from math import sin, cos, tan, radians, degrees, copysign, acos, atan, sqrt, pi, floor
 from pygame.math import Vector2
 from pygame.locals import*
-from Snowblower import*
 from Robot import*
 from CoverageAlgorithm import*
+from Snowblower import*
 
 DT = 0.06
 
@@ -145,14 +145,10 @@ class SnowRemovalSim:
 
     def run(self):
         # build instructions with coverage algorithm
-        covAlg = CoverageAlgorithm(self.parkinglot, ROBOT_WIDTH)
+        covAlg = CoverageAlgorithm(self.parkinglot, ROBOT_WIDTH, CELLSIZE)
         instructions = covAlg.getInstructions()
+        print('Instructions delivered to snowblower: ',instructions)
 
-        # """
-        # THIS IS JUST FOR TESTING
-        # """
-        # instructions = [(90, 10), (45, 10)]
-        # """ """
         while not self.exit:
             dt = self.clock.get_time() / 1000
 
@@ -183,6 +179,8 @@ class SnowRemovalSim:
                     blower_distance = self.snowblower.get_distance(
                         current_position)
                     #print(f"blower angle: {blower_angle}, blower distance: {blower_distance}")
+                    # blower_angle = 0
+                    # blower_distance = 0
 
                     # erase the screen
                     self.screen.fill(BLACK)
@@ -222,10 +220,18 @@ def getFile(argv):
         print("Unable to access file")
         return None
 
+def getTestFile():
+    filename = './parkinglot/lot-easy.json'
+    with open(filename) as f:
+        data = json.load(f)
+    return data
+
+
 
 if __name__ == '__main__':
     # load the parking lot
     initState = getFile(sys.argv[1:])
+    # initState = getTestFile()
     if initState is not None:
         srSim = SnowRemovalSim(deserializeParkingLot(initState['parkingLot']['outline']),
                                deserializeSnowZones(
