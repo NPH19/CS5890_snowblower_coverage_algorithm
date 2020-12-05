@@ -164,6 +164,7 @@ class CoverageAlgorithm:
     def createInstructions(self):
         for i in range(len(self.boundaries) - 1):
             distance = self.findMax(self.boundaries[i]) - self.findMin(self.boundaries[i])
+            range_ = self.boundaries[i + 1] - self.boundaries[i]
             turn = self.startDirection
             self.instructions.append((turn,int(distance/self.cellsize)))
             sign = 1
