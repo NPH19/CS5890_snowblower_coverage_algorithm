@@ -8,7 +8,7 @@ class Snowblower:
     def __init__(self, snowzones, heading):
         self.snowzones = snowzones
         self.heading = heading
-        self.angles = [180, 150 120, 90, 60, 30, 0]
+        self.angles = [180, 150, 120, 90, 60, 30, 0]
         self.left_angle = 180
         self.right_angle = 0
         self.max_distance = 5
@@ -20,16 +20,20 @@ class Snowblower:
     def get_angle(self, position):
         # TODO
         angle = 0
-        return self.angle
+        return -90
+        #return self.angle
 
     def get_distance(self, position):
         # TODO
         distance = 1
-        return self.distance
+        return 2
+        #return self.distance
 
     def update(self, points_traversed, heading, position, robot_width):
-        previous_x = self.distance * cos(self.angle + (90 - heading)) + position[0]
-        previous_y = self.distance * sin(self.angle + (90 - heading)) + position[1]
+        previous_x = int(self.distance * cos(self.angle + (90 - heading)) + position[0])
+        previous_y = int(self.distance * sin(self.angle + (90 - heading)) + position[1])
+        print(self.snowzones)
+        print(f" 1: {self.snowzones[0]}, 2: {self.snowzones[3]}, 3: {self.snowzones[0]}, 4: {self.snowzones[3]}")
         if previous_x > self.snowzones[0][0] and previous_x < self.snowzones[3][0] and previous_y > self.snowzones[0][1] and previous_y < self.snowzones[3][1]:
             self.angle = angle
             self.distance = distance

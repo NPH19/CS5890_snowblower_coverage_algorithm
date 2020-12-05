@@ -66,12 +66,21 @@ class SnowRemovalSim:
         self.snowblower = Snowblower(snowzones, 0)
         self.points_traversed = []
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.join(current_dir, "snowblower.png")
-        raw_car_image = pygame.image.load(image_path)
+        # set up car image
+        car_image_path = os.path.join(current_dir, "snowblower2.png")
+        raw_car_image = pygame.image.load(car_image_path)
         # scale car sprite
         size = raw_car_image.get_size()
+        
         self.car_image = pygame.transform.scale(
-            raw_car_image, (int(size[0]/2), int(size[1]/2)))
+            raw_car_image, (int(size[0]/CELLSIZE), int(size[0]/CELLSIZE)))
+        # set up snow blower image 
+        snow_blower_image = os.path.join(current_dir, "arrow.png")
+        raw_snow_blower_image = pygame.image.load(snow_blower_image)
+        # scale snow_blower sprite
+        size = raw_snow_blower_image.get_size()
+        self.snow_blower_image = pygame.transform.scale(
+            raw_snow_blower_image, (int(size[0]/CELLSIZE), int(size[0]/CELLSIZE)))
 
     def drawPointsTraversed(self):
         for point in self.points_traversed:
@@ -102,18 +111,27 @@ class SnowRemovalSim:
 
         # draw car at the correct angle
         rotated = pygame.transform.rotate(self.car_image, direction)
-        new_position = Vector2(position[0], position[1])
         rect = rotated.get_rect()
         # self.screen.blit(
         # rotated, (position[0], position[1]))
-        self.screen.blit(rotated, new_position * PPU -
-                         (rect.width / 2, rect.height / 2))
+        new_position = Vector2(position[0], position[1])
+        # self.screen.blit(rotated, (position[0], position[1]) * PPU +
+        #                  (rect.width / 2, rect.height / 2))
+        self.screen.blit(rotated, (position[0] * PPU, position[1] * PPU))
 
-        # drawPoint(self.screen, position[0], position[1], DARKORANGE)
+        #drawPoint(self.screen, position[0], position[1], PURPLE)
         return
 
-    def drawBlower(self, angle, distance):
-        # todo
+    def drawBlower(self, angle, distance, position):
+        x = 10 * cos(angle + (self.robot.heading-90)) + position[0]
+        y = 10 * sin(angle + (self.robot.heading-90)) + position[1]
+        new_position = Vector2(position[0], position[1])
+        new_position2 = Vector2(x, y)
+        rotated = pygame.transform.rotate(self.snow_blower_image, angle + self.robot.heading)
+        rect = rotated.get_rect()
+        self.screen.blit(rotated, new_position * PPU)
+        #pygame.draw.line(self.screen, YELLOW, new_position * PPU, new_position2 * PPU, 10)
+        
         return
 
     def drawSnowZones(self):
@@ -159,11 +177,12 @@ class SnowRemovalSim:
                 for j in range(0, len(list_of_points)):
 
                     current_position = list_of_points[j]
-                    self.snowblower.update(self.points_traversed, self.robot.heading, current_position, ROBOT_WIDTH)
+                    #self.snowblower.update(self.points_traversed, self.robot.heading, current_position, ROBOT_WIDTH)
                     blower_angle = self.snowblower.get_angle(
                         current_position)
                     blower_distance = self.snowblower.get_distance(
                         current_position)
+                    #print(f"blower angle: {blower_angle}, blower distance: {blower_distance}")
 
                     # erase the screen
                     self.screen.fill(BLACK)
@@ -179,10 +198,10 @@ class SnowRemovalSim:
                     self.drawRobot(current_position, self.robot.heading)
 
                     # draw the snowblower
-                    self.drawBlower(blower_angle, blower_distance)
+                    self.drawBlower(blower_angle, blower_distance, current_position)
 
                     pygame.display.flip()
-                    # pygame.time.delay(50)
+                    pygame.time.delay(50)
                     self.clock.tick(self.ticks)
 
             pygame.quit()
