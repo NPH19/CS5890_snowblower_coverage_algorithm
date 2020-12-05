@@ -1,4 +1,4 @@
-
+from math import sqrt
 
 # {
 #   parkingLot :{
@@ -64,7 +64,7 @@ class Line:
         self.y2 = y2
 
     def length(self):
-        return math.sqrt((self.x2 - self.x1)**2 + (self.y2 - self.y1)**2)
+        return sqrt((self.x2 - self.x1)**2 + (self.y2 - self.y1)**2)
 
     def ptOnLine(self, x, y):
         if (x >= self.x1 and x <= self.x2) or (x >= self.x2 and x <= self.x1):
@@ -74,7 +74,7 @@ class Line:
 
 
 class CoverageAlgorithm:
-    def __init__(self, parkinglot, robot_width):
+    def __init__(self, parkinglot, robot_width, cellsize):
         self.parkinglot = parkinglot
         self.instructions = []
         self.robot_width = robot_width
@@ -86,8 +86,11 @@ class CoverageAlgorithm:
         self.xMax = None
         self.yMin = None
         self.yMax = None
+        self.cellsize = cellsize
 
     def getInstructions(self):
+        # return MOCK_INSTRUCTIONS
+        print('parking lot: ',self.parkinglot)
         self.parsePoints(self.parkinglot)
         self.createInstructions()
         return self.instructions
@@ -101,19 +104,16 @@ class CoverageAlgorithm:
                     parkingLot[i+1][1]
             ))
             if self.xMin == None or parkingLot[i][0] < self.xMin:
-                self.xMin = parkingLot[i][0]
+                self.xMin = self.parkinglot[i][0]
             if self.yMin == None or parkingLot[i][1] < self.yMin:
-                self.yMin = parkingLot[i][1]
+                self.yMin = self.parkinglot[i][1]
             if self.xMax == None or parkingLot[i][0] > self.xMax:
-                self.xMax = parkingLot[i][0]
+                self.xMax = self.parkinglot[i][0]
             if self.yMax == None or parkingLot[i][1] > self.yMax:
-                self.yMax = parkingLot[i][1]
-        
-        print(self.xMax, self.xMin, self.yMax, self.yMin)
+                self.yMax = self.parkinglot[i][1]
 
-        xBound = self.sliceLot(parkingLot)
-        yBound = self.sliceLot(parkingLot, axis=1)
-        # TODO: Find direction
+        xBound = self.sliceLot(self.parkinglot)
+        yBound = self.sliceLot(self.parkinglot, axis=1)
         if len(xBound) < len(yBound):
             self.boundaries = xBound
             self.startDirection = 90
@@ -123,7 +123,6 @@ class CoverageAlgorithm:
             self.startDirection = 0
             self.axis = 1
         self.boundaries.sort()
-        print(self.boundaries)
 
     def sliceLot(self, points, axis=0):
         boundaries = []
@@ -163,58 +162,15 @@ class CoverageAlgorithm:
         return m
 
     def createInstructions(self):
-        # TODO: move in direction found above rather than default
         for i in range(len(self.boundaries) - 1):
             distance = self.findMax(self.boundaries[i]) - self.findMin(self.boundaries[i])
-            range_ = self.boundaries[i + 1] - self.boundaries[i]
-            turn = self.startDirection + 90
-            for _ in range(0,range_,self.robot_width):
-                self.instructions.append((turn,distance))
-                self.instructions.append((turn,self.robot_width))
-                self.instructions.append((turn,distance))
-                turn += 180
-                turn %= 360
-                self.instructions.append((turn,self.robot_width))
-
-###################################################################################
-# import math
-
-lot1 = [
-    (0, 50),
-    (100, 50),
-    (100, 0),
-    (150, 0),
-    (150, 100),
-    (75, 100),
-    (75, 75),
-    (50, 75),
-    (50, 100),
-    (0, 100)
-]
-
-lot2 = [
-    (0, 0),
-    (100, 0),
-    (100, 100),
-    (0, 100),
-]
-
-algo = CoverageAlgorithm(lot1, 10)
-instructions = algo.getInstructions()
-print(instructions)
-
-'''
-[0,25,50,100]
-_________________________________________________
-|        *                  *                     |
-|        *                  *                     |
-|        *                  *                     |
-|        *                  *                     |
-|        *                  *                     |
-|        *                  *                     |
-|________*                  * _____________________
-        |                   |
-        |                   |
-        |___________________|                       
-
-'''
+            turn = self.startDirection
+            self.instructions.append((turn,int(distance/self.cellsize)))
+            sign = 1
+            for _ in range(0,distance,self.robot_width):
+                sign *= -1
+                side_step = self.robot_width
+                turn = sign * 90
+                self.instructions.append((turn,int(side_step/self.cellsize)))
+                turn = sign * 90
+                self.instructions.append((turn, int(distance/self.cellsize)))
