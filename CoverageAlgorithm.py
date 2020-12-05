@@ -88,7 +88,6 @@ class CoverageAlgorithm:
         self.yMax = None
 
     def getInstructions(self):
-        # return MOCK_INSTRUCTIONS
         self.parsePoints(self.parkinglot)
         self.createInstructions()
         return self.instructions
@@ -102,18 +101,18 @@ class CoverageAlgorithm:
                     parkingLot[i+1][1]
             ))
             if self.xMin == None or parkingLot[i][0] < self.xMin:
-                self.xMin = parkinglot[i][0]
+                self.xMin = parkingLot[i][0]
             if self.yMin == None or parkingLot[i][1] < self.yMin:
-                self.yMin = parkinglot[i][1]
+                self.yMin = parkingLot[i][1]
             if self.xMax == None or parkingLot[i][0] > self.xMax:
-                self.xMax = parkinglot[i][0]
+                self.xMax = parkingLot[i][0]
             if self.yMax == None or parkingLot[i][1] > self.yMax:
-                self.yMax = parkinglot[i][1]
-            
-        # self.lines.append(Line(self.parkingLot[len(self.parkingLot)-1][0], self.parkingLot[len(
-        #     self.parkingLot)-1][1], self.parkingLot[0][0], self.parkingLot[0][1]))
-        xBound = self.sliceLot(self.parkingLot)
-        yBound = self.sliceLot(self.parkingLot, axis=1)
+                self.yMax = parkingLot[i][1]
+        
+        print(self.xMax, self.xMin, self.yMax, self.yMin)
+
+        xBound = self.sliceLot(parkingLot)
+        yBound = self.sliceLot(parkingLot, axis=1)
         # TODO: Find direction
         if len(xBound) < len(yBound):
             self.boundaries = xBound
@@ -124,123 +123,61 @@ class CoverageAlgorithm:
             self.startDirection = 0
             self.axis = 1
         self.boundaries.sort()
-        # m = max(yVals)
-        # if m > yMax:
-        #     yMax = m
-
+        print(self.boundaries)
 
     def sliceLot(self, points, axis=0):
         boundaries = []
         for point in points:
             if point[axis] not in boundaries:
                 boundaries.append(point[axis])
-            # if point[1] not in yVals:
-            #     yVals.append(point[1])
         return boundaries
 
     def findMin(self, val):
         if self.axis == 0:
-            for y in range(self.yMax + 1):
+            for y in range(self.yMin, self.yMax + 1):
                 for line in self.lines:
                     if line.ptOnLine(val, y):
+                        print("min y: " + str(y))
                         return y
         elif self.axis == 1:
-            for x in range(self.xMax + 1):
+            for x in range(self.xMin, self.xMax + 1):
                 for line in self.lines:
                     if line.ptOnLine(x, val):
+                        print("min x: " + str(x))
                         return x
         return None
 
     def findMax(self, val):
         m = None
         if self.axis == 0:
-            for y in range(self.xMax + 1):
+            for y in range(self.yMin, self.yMax + 1):
                 for line in self.lines:
                     if line.ptOnLine(val, y):
                         m = y
         elif self.axis == 1:
-            for x in range(self.yMax + 1):
+            for x in range(self.xMin, self.xMax + 1):
                 for line in self.lines:
                     if line.ptOnLine(x, val):
                         m = x
+        print("max: " + str(m))
         return m
-
-    # def findMinYOnX(self, x):
-    #     for y in range(yMax + 1):
-    #         for line in lines:
-    #             if line.ptOnLine(x, y):
-    #                 return y
-    #     return None
-
-
-    # def findMaxYOnX(self, x):
-    #     m = None
-    #     for y in range(yMax + 1):
-    #         for line in lines:
-    #             if line.ptOnLine(x, y):
-    #                 m = y
-    #     return m
-
 
     def createInstructions(self):
         # TODO: move in direction found above rather than default
-        # turn = self.startDirection
         for i in range(len(self.boundaries) - 1):
-            # if self.axis == 0:
-            distance = findMax(self.boundaries[i]) - findmin(self.boundaries[i])
-
-            # elif self.axis == 1:
-            #     distance = findMax(self.boundaries[i]) - findMin(self.boundaries[i])
-
-            # boundStart = self.boundaries[i]
-            # boundEnd = self.boundaries[i + 1]
-            # Start = self.findMin(i)
-            # End = self.findMax(i)
-
-            # diffX = xEnd - xStart
-            # print(f"goto({xStart},{yStart})")
-            turn = self.startDirection
-            self.instructions.append((turn,distance))
-            for _ in range(0,distance,self.robot_width):
-                # print(f"goforward({diffX})")
-                # print(f"turn({turn})")
-                # print(f"currentposition({xEnd}, {yStart})")
-                self.instructions.append()
-                # print(f"goforward({ROBOTLENGTH})")
-                # print(f"turn({turn})")
-                yStart += ROBOTLENGTH
+            distance = self.findMax(self.boundaries[i]) - self.findMin(self.boundaries[i])
+            range_ = self.boundaries[i + 1] - self.boundaries[i]
+            turn = self.startDirection + 90
+            for _ in range(0,range_,self.robot_width):
+                self.instructions.append((turn,distance))
+                self.instructions.append((turn,self.robot_width))
+                self.instructions.append((turn,distance))
                 turn += 180
                 turn %= 360
-                # print(f"currentposition({xStart}, {yStart})")
-                self.instructions.append([turn, (xEnd, yStart)])
-
-
-    def reset(self):
-        lines.clear()
-        # verticalBoundaries.clear()
-        yVals.clear()
-        yMax = 0
-        instructions.clear()
-
-
+                self.instructions.append((turn,self.robot_width))
 
 ###################################################################################
-import math
-
-
-
-
-
-lines = []
-verticalBoundaries = []
-yVals = []
-yMax = 0
-instructions = []
-horizBoundaries = []
-
-
-
-
+# import math
 
 lot1 = [
     (0, 50),
@@ -262,24 +199,9 @@ lot2 = [
     (0, 100),
 ]
 
-print("parsing lot 1...")
-parsePoints(lot1)
-print(verticalBoundaries)
-for x in verticalBoundaries:
-    print(
-        f"min-{x}: {findMinYOnX(x+ROBOTLENGTH)} -- max-{x}: {findMaxYOnX(x+ROBOTLENGTH)}")
-
-createInstructions()
+algo = CoverageAlgorithm(lot1, 10)
+instructions = algo.getInstructions()
 print(instructions)
-
-RESET()
-
-# print("parsing lot 2...")
-# parsePoints(lot2)
-# print(verticalBoundaries)
-# for x in verticalBoundaries:
-#     print(f"min-{x}: {findMinYOnX(x+ROBOTLENGTH)} -- max-{x}: {findMaxYOnX(x+ROBOTLENGTH)}")
-
 
 '''
 [0,25,50,100]
@@ -296,7 +218,3 @@ _________________________________________________
         |___________________|                       
 
 '''
-# def invertParkinglot(parkinglot):
-#     newParking = []
-#     for i in range(len(parkinglot)):
-#         parkinglot[i]

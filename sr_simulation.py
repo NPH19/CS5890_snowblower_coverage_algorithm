@@ -7,6 +7,7 @@ from pygame.locals import*
 from Snowblower import*
 from Robot import*
 from CoverageAlgorithm import*
+import json
 
 DT = 0.06
 
@@ -195,13 +196,13 @@ def getFile(argv):
         print("Please specify JSON config filename")
         return None
     filename = sys.argv[1]
-    try:
-        with open(filename) as f:
-            data = json.load(f)
-        return data
-    except:
-        print("Unable to access file")
-        return None
+    # try:
+    with open(filename) as f:
+        data = json.load(f)
+    return data
+    # except:
+    #     print("Unable to access file")
+    #     return None
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ class Snowblower:
     def __init__(self, snowzones, heading):
         self.snowzones = snowzones
         self.heading = heading
-        self.angles = [180, 150 120, 90, 60, 30, 0]
+        self.angles = [180, 150, 120, 90, 60, 30, 0]
         self.left_angle = 180
         self.right_angle = 0
         self.max_distance = 5
