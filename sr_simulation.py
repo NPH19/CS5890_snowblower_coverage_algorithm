@@ -200,7 +200,7 @@ class SnowRemovalSim:
                     self.drawBlower(blower_angle, blower_distance, current_position)
 
                     pygame.display.flip()
-                    pygame.time.delay(50)
+                    pygame.time.delay(5)
                     self.clock.tick(self.ticks)
 
             pygame.quit()

@@ -116,12 +116,14 @@ class CoverageAlgorithm:
         yBound = self.sliceLot(self.parkinglot, axis=1)
         if len(xBound) < len(yBound):
             self.boundaries = xBound
-            self.startDirection = 90
+            self.startDirection = 0
             self.axis = 0
+            print('splitting horizontally')
         else:
             self.boundaries = yBound
             self.startDirection = 0
             self.axis = 1
+            print('splitting vertically')
         self.boundaries.sort()
 
     def sliceLot(self, points, axis=0):
@@ -164,14 +166,22 @@ class CoverageAlgorithm:
     def createInstructions(self):
         for i in range(len(self.boundaries) - 1):
             distance = self.findMax(self.boundaries[i]) - self.findMin(self.boundaries[i])
-            range_ = self.boundaries[i + 1] - self.boundaries[i]
+            distance -= self.robot_width
+            range_ = self.boundaries[i + 1] - self.boundaries[i] - self.robot_width
             turn = self.startDirection
             self.instructions.append((turn,int(distance/self.cellsize)))
-            sign = 1
-            for _ in range(0,distance,self.robot_width):
+            if self.axis == 0:
+                sign = -1
+            else:
+                sign = 1
+
+            for _ in range(0,range_-1,self.robot_width):
                 sign *= -1
                 side_step = self.robot_width
                 turn = sign * 90
                 self.instructions.append((turn,int(side_step/self.cellsize)))
                 turn = sign * 90
                 self.instructions.append((turn, int(distance/self.cellsize)))
+            # TODO: get to next cell
+            # Finding start position of next cell (top left?)
+            # Goto command?
