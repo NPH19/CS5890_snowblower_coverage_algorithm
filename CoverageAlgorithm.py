@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, atan2, degrees
 
 # {
 #   parkingLot :{
@@ -164,12 +164,21 @@ class CoverageAlgorithm:
         return m
 
     def createInstructions(self):
+        print('bound, ',self.boundaries)
+        position_to_go = [0,0]
+        position = [0,0]
+        print('pos ',position)
+        distance_list = [100*self.cellsize, 60*self.cellsize]
+        turn = self.startDirection
+        count = 0
         for i in range(len(self.boundaries) - 1):
-            distance = self.findMax(self.boundaries[i]) - self.findMin(self.boundaries[i])
+            # distance = self.findMax(self.boundaries[i]) - self.findMin(self.boundaries[i])
+            distance = distance_list[i]
             distance -= self.robot_width
             range_ = self.boundaries[i + 1] - self.boundaries[i] - self.robot_width
-            turn = self.startDirection
             self.instructions.append((turn,int(distance/self.cellsize)))
+            position[int(not self.axis)] += int(distance/self.cellsize)
+            print('pos ',position)
             if self.axis == 0:
                 sign = -1
             else:
@@ -180,8 +189,46 @@ class CoverageAlgorithm:
                 side_step = self.robot_width
                 turn = sign * 90
                 self.instructions.append((turn,int(side_step/self.cellsize)))
+                position[self.axis] += int(side_step/self.cellsize)
+                print('pos ',position)
                 turn = sign * 90
                 self.instructions.append((turn, int(distance/self.cellsize)))
-            # TODO: get to next cell
-            # Finding start position of next cell (top left?)
-            # Goto command?
+                position[int(not self.axis)] -= sign*int(distance/self.cellsize)
+                print('pos ',position)
+            if count == 0:
+              print('final pos ',position)
+              # TODO: get to next cell
+              # Finding start position of next cell (top left?)
+              # Goto command?
+              position_to_go = self.findTopLeft(self.boundaries[i+1], position_to_go)
+              angle_to_go = 180
+              print('angle ', angle_to_go)
+              dist = position_to_go[1]
+              self.instructions.append((angle_to_go, dist))
+              self.instructions.append((90,10))
+              turn = -90
+              count+=1
+
+
+    def findTopLeft(self, val, old_point):
+      point = []
+      print('val ', val)
+      for i in range(len(self.parkinglot)):
+        if self.axis == 0:
+          if self.parkinglot[i][0] == val:
+            if self.parkinglot[i][1] != old_point[1]:
+              # if not point:
+                point = [int(val/self.cellsize), int(self.parkinglot[i][1]/self.cellsize)]
+              # else:
+              #   if self.parkinglot[i][1] < point[1]:
+              #     point = [val/self.cellsize, self.parkinglot[i][1]/self.cellsize]
+        else:
+          if self.parkinglot[i][1] == val:
+            if self.parkinglot[i][0] != old_point[0]:
+              if not point:
+                point = [self.parkinglot[i][0]/self.cellsize, val/self.cellsize]
+              else:
+                if self.parkinglot[i][0] < point[0]:
+                  point = [self.parkinglot[i][0]/self.cellsize, val/self.cellsize]
+      print('point ',point)
+      return point
