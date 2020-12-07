@@ -124,11 +124,11 @@ class SnowRemovalSim:
         return
 
     def drawBlower(self, angle, distance, position):
-        x = 10 * cos(angle + (self.robot.heading-90)) + position[0]
-        y = 10 * sin(angle + (self.robot.heading-90)) + position[1]
+        #x = 10 * cos(angle + (self.robot.heading-90)) + position[0]
+        #y = 10 * sin(angle + (self.robot.heading-90)) + position[1]
         new_position = Vector2(position[0], position[1])
-        new_position2 = Vector2(x, y)
-        rotated = pygame.transform.rotate(self.snow_blower_image, angle + self.robot.heading)
+        #new_position2 = Vector2(x, y)
+        rotated = pygame.transform.rotate(self.snow_blower_image, angle + (self.robot.heading - 90))
         rect = rotated.get_rect()
         self.screen.blit(rotated, new_position * PPU)
         #pygame.draw.line(self.screen, YELLOW, new_position * PPU, new_position2 * PPU, 10)
@@ -174,7 +174,7 @@ class SnowRemovalSim:
                 for j in range(0, len(list_of_points)):
 
                     current_position = list_of_points[j]
-                    #self.snowblower.update(self.points_traversed, self.robot.heading, current_position, ROBOT_WIDTH)
+                    self.snowblower.update(self.points_traversed, self.robot.heading, current_position, ROBOT_WIDTH)
                     blower_angle = self.snowblower.get_angle(
                         current_position)
                     blower_distance = self.snowblower.get_distance(
