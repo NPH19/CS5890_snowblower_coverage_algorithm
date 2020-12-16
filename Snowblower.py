@@ -1,42 +1,36 @@
 import json
 from math import sqrt, acos, pi, cos, sin, radians
 
-# TODO
-
-
 class Snowblower:
     def __init__(self, snowzones, heading):
         self.snowzones = snowzones[0]
         self.heading = heading
-        self.angles = [180, 150, 120, 90, 60, 30, 0]
-        self.left_angle = 180
-        self.right_angle = 0
+        # arrays holding distances and angles to try in update method
+        self.angles = [120, 60, 90, 150, 30, 180, 0]
+        self.distances = [0.25, 1, 2, 3, 4, 5]
         self.max_distance = 5
-        self.previous_angle = 90
-        self.previous_distance = 1
         self.angle = 90
         self.distance = 1
 
+    # Returns the angle of the snowblower chute
     def get_angle(self, position):
-        # TODO
-        angle = 0
-        #return -90
         return self.angle
 
+    # Returns the distance of the snowblower chute
     def get_distance(self, position):
-        # TODO
-        distance = 1
-        #return 2
         return self.distance
 
+    # Updates the snowblower chute distance and angle given:
+    # robot position, robot heading, and the points traversed.
+    # works by converting the cylindral coordinates of the angle and distance to cartesian coordinates, 
+    # then checks those coordinates on snowzones and points traversed.
     def update(self, points_traversed, heading, position, robot_width):
-        previous_x = self.distance * cos(radians(self.angle + (heading - 90))) + position[0]
-        previous_y = self.distance * sin(radians(self.angle + (heading - 90))) + position[1]
-        #print(self.snowzones)
-        #print(f" 1: {self.snowzones[0]}, 2: {self.snowzones[3]}, 3: {self.snowzones[0]}, 4: {self.snowzones[3]}")
-        if previous_x > self.snowzones[0][0] and previous_x < self.snowzones[3][0] and previous_y > self.snowzones[0][1] and previous_y < self.snowzones[3][1]:
-            #self.angle = angle
-            #self.distance = distance
+    # This first section checks the current distance and angle to test if they are still good.
+        previous_x = self.distance * cos(radians(self.angle + (heading - 90)))
+        previous_y = self.distance * sin(radians(self.angle + (heading - 90)))
+        previous_x2 = self.distance * cos(radians(self.angle + (heading - 90))) + position[0]
+        previous_y2 = self.distance * sin(radians(self.angle + (heading - 90))) + position[1]
+        if previous_x2 > self.snowzones[0][0] and previous_x2 < self.snowzones[3][0] and previous_y2 > self.snowzones[0][1] and previous_y2 < self.snowzones[3][1]:
             return
         for point in points_traversed:
             x_diff = abs(position[0] - point[0])
@@ -52,14 +46,15 @@ class Snowblower:
                 temp_angle = None
                 break
             if temp_distance != None:
-                #self.angle = angle
-                #self.distance = distance
                 return
+        # this part looks at all the distances and angles and returns the first one that results in snow being thrown in a snowzone or on uncleared snow.
         for angle in self.angles:
-            for distance in range(1,6):
-                x = distance * cos(radians(angle + (heading - 90))) + position[0]
-                y = distance * sin(radians(angle + (heading - 90))) + position[1]
-                if x > self.snowzones[0][0] and x < self.snowzones[3][0] and y > self.snowzones[0][1] and y < self.snowzones[3][1]:
+            for distance in self.distances:
+                x = distance * cos(radians(angle + (heading - 90)))
+                y = distance * sin(radians(angle + (heading - 90)))
+                x2 = distance * cos(radians(angle + (heading - 90))) + position[0]
+                y2 = distance * sin(radians(angle + (heading - 90))) + position[1]
+                if x2 > self.snowzones[0][0] and x2 < self.snowzones[3][0] and y2 > self.snowzones[0][1] and y2 < self.snowzones[3][1]:
                     self.angle = angle
                     self.distance = distance
                     return
@@ -80,4 +75,7 @@ class Snowblower:
                     self.angle = angle
                     self.distance = distance
                     return 
+        # If neither snow or snowzones are near, resort to just throwing directly infront of the snowblower.
+        self.angle = 90
+        self.distance = 1
 
